@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>НЕФК | Спеціальність 123 "ОКМС"</title>
+  <base target="_self">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@preline/preline@2.0.0/dist/preline.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1E40AF', // Основний синій (НЕФК)
+            accent: '#D97706',  // Акцентний жовто-оранжевий
+            dark: '#1F2937',
+            light: '#F9FAFB'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    #mainHeader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10000;
+      transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+    }
+    body {
+      padding-top: 76px; /* висота header + відступ */
+    }
+    @media (max-width: 640px) {
+      body {
+        padding-top: 60px; /* менший відступ для мобільних */
+      }
+    }
+    .smooth-scroll {
+      scroll-behavior: smooth;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+      border-color: #fbbf24;
+      background: #fbbf24;
+      color: #fff !important;
+    }
+    .gradient-bg {
+      background: #1E40AF;
+    }
+    .section-bg {
+      background: #fbbf24;
+      backdrop-filter: blur(2px);
+    }
+    .icon-bright {
+      filter: drop-shadow(0 0 8px #fbbf24);
+    }
+    /* Додаткові адаптивні стилі */
+    @media (max-width: 640px) {
+      .section-bg, .gradient-bg {
+        border-radius: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      .shadow-2xl, .shadow-lg {
+        box-shadow: none !important;
+      }
+      .rounded-2xl, .rounded-xl {
+        border-radius: 1rem !important;
+      }
+    }
+
+    /* AI Chatbot стилі */
+    #aiChatBtn {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 99999;
+      background: #1E40AF;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 4px 24px rgba(30,64,175,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #aiChatBtn:hover {
+      background: #D97706;
+      color: #fff;
+    }
+    #aiChatWindow {
+      position: fixed;
+      right: 24px;
+      bottom: 96px;
+      width: 340px;
+      max-width: 95vw;
+      height: 480px;
+      max-height: 80vh;
+      background: #fff;
+      color: #222;
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(30,64,175,0.18);
+      z-index: 99999;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .dark #aiChatWindow {
+      background: #1F2937;
+      color: #fff;
+    }
+    #aiChatHeader {
+      background: #1E40AF;
+      color: #fff;
+      padding: 1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #aiChatClose {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    #aiChatMessages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      font-size: 1rem;
+      background: inherit;
+    }
+    #aiChatInputArea {
+      display: flex;
+      border-top: 1px solid #eee;
+      background: inherit;
+      padding: 0.5rem;
+    }
+    #aiChatInput {
+      flex: 1;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      outline: none;
+      background: #f9fafb;
+      color: #222;
+    }
+    .dark #aiChatInput {
+      background: #374151;
+      color: #fff;
+      border-color: #374151;
+    }
+    #aiChatSend {
+      background: #1E40AF;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      margin-left: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #aiChatSend:hover {
+      background: #D97706;
+    }
+    .ai-msg, .user-msg {
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: flex-start;
+    }
+    .ai-msg span {
+      background: #e0e7ff;
+      color: #1E40AF;
+      padding: 0.5rem 0.9rem;
+      border-radius: 1rem 1rem 1rem 0.2rem;
+      max-width: 80%;
+      display: inline-block;
+      font-size: 0.98rem;
+    }
+    .dark .ai-msg span {
+      background: #374151;
+      color: #fff;
+    }
+    .user-msg {
+      justify-content: flex-end;
+    }
+    .user-msg span {
+      background: #D97706;
+      color: #fff;
+      padding: 0.5rem 0.9rem;
+      border-radius: 1rem 1rem 0.2rem 1rem;
+      max-width: 80%;
+      display: inline-block;
+      font-size: 0.98rem;
+    }
+  </style>
+</head>
+<body class="bg-yellow-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 smooth-scroll">
+  <header id="mainHeader" class="gradient-bg text-white shadow-2xl transition-all duration-500">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center justify-center w-full md:w-auto mb-2 md:mb-0 gap-2 flex-row">
+          <img src="images/Logo3.png" alt="Логотип НЕФК" class="h-10 sm:h-14 mr-1" />
+          <!-- Бургер-кнопка для мобільних -->
+          <button id="burgerBtn" class="md:hidden ml-2 p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Відкрити меню">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+        <!-- Десктоп-меню -->
+        <nav class="w-full md:w-auto hidden md:flex justify-center md:justify-end space-x-2 md:space-x-6 mt-2 md:mt-0">
+          <a href="index.html" class="cursor-pointer px-2 py-1 rounded hover:bg-accent hover:text-white font-semibold transition">Головна</a>
+          <a href="teachers.html" class="cursor-pointer px-2 py-1 rounded hover:bg-accent hover:text-white font-semibold transition">Викладачі</a>
+          <a href="subjects.html" class="cursor-pointer px-2 py-1 rounded hover:bg-accent hover:text-white font-semibold transition">Напрямки</a>
+          <a href="gallery.html" class="cursor-pointer px-2 py-1 rounded hover:bg-accent hover:text-white font-semibold transition">Галерея</a>
+          <a href="abiturient.html" class="cursor-pointer px-2 py-1 rounded hover:bg-accent hover:text-white font-semibold transition">Абітурієнту</a>
+          <span onclick="toggleDarkMode()" class="cursor-pointer w-9 h-9 flex items-center justify-center rounded hover:bg-accent hover:text-white transition">
+            <i class="fas fa-moon dark:hidden mx-auto text-xl absolute"></i>
+            <i class="fas fa-sun hidden dark:block mx-auto text-xl absolute"></i>
+          </span>
+        </nav>
+        <!-- Мобільне меню (випадаюче) -->
+        <nav id="mobileMenu" class="fixed inset-0 z-[99999] bg-black bg-opacity-70 flex flex-col justify-start items-end p-0 hidden md:hidden">
+          <div class="w-3/4 max-w-xs bg-white dark:bg-gray-800 h-full shadow-2xl p-6 flex flex-col relative">
+            <button id="closeBurger" class="self-end mb-6 p-2 rounded focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Закрити меню">
+              <svg class="w-7 h-7 text-gray-900 dark:text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            <ul class="flex flex-col space-y-4">
+              <li><span onclick="scrollToSection('home');closeMobileMenu()" class="block cursor-pointer px-4 py-3 rounded-lg bg-accent text-white font-semibold shadow transition text-center">Головна</span></li>
+              <li><a href="teachers.html" class="block cursor-pointer px-4 py-3 rounded-lg bg-accent text-white font-semibold shadow transition text-center">Викладачі</a></li>
+              <li><a href="subjects.html" class="block cursor-pointer px-4 py-3 rounded-lg bg-accent text-white font-semibold shadow transition text-center">Напрямки</a></li>
+              <li><a href="gallery.html" class="block cursor-pointer px-4 py-3 rounded-lg bg-accent text-white font-semibold shadow transition text-center">Галерея</a></li>
+              <li><a href="abiturient.html" class="block cursor-pointer px-4 py-3 rounded-lg bg-accent text-white font-semibold shadow transition text-center">Абітурієнту</a></li>
+            </ul>
+            <span
+              onclick="toggleDarkMode();closeMobileMenu()"
+              class="absolute bottom-6 left-1/2 -translate-x-1/2 cursor-pointer w-8 h-8 flex items-center justify-center rounded-full bg-accent text-white transition"
+              style="box-shadow: 0 2px 8px rgba(0,0,0,0.12);"
+            >
+              <i class="fas fa-moon dark:hidden text-base"></i>
+              <i class="fas fa-sun hidden dark:block text-base"></i>
+            </span>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-2 sm:px-4">
+    <!-- Головна -->
+    <section id="home" class="section-bg rounded-2xl shadow-2xl p-4 sm:p-10 text-white my-8 sm:my-12">
+      <div class="w-full px-2 sm:px-0">
+        <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 drop-shadow-lg text-center text-white">Коледж НЕФК</h2>
+        <p class="text-lg sm:text-xl mb-8 font-semibold text-center text-white">
+          Комп’ютерна інженерія — це проєктування, налаштування та обслуговування сучасних комп’ютерних систем. У НЕФК ми готуємо фахівців, які працюють з мікроконтролерами, мережами та програмуванням.
+        </p>
+        <div class="flex justify-center">
+          <button onclick="scrollToSection('subjects')" class="bg-accent hover:bg-primary text-white font-bold py-3 px-6 sm:px-8 rounded-xl shadow-lg transition text-base sm:text-lg animate-pulse">
+            Дізнатися про напрями
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Викладачі -->
+    <section id="teachers" class="my-8 sm:my-12">
+      <div class="w-full">
+        <h2 class="text-2xl sm:text-3xl font-extrabold mb-8 border-b-4 border-accent pb-2 inline-block text-primary drop-shadow-lg">Наші викладачі</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
+          <!-- Викладач 1 -->
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden card-hover border-2 border-transparent transition duration-300 flex flex-col items-center justify-center text-center p-4 sm:p-8 min-h-[320px] sm:min-h-[380px]">
+            <div class="w-40 h-40 sm:w-44 sm:h-44 rounded-lg overflow-hidden shadow-lg border-4 border-accent bg-white flex items-center justify-center mb-4 sm:mb-6">
+              <img src="images/YPNEWBG.png" alt="Фото Юрія Петровича" class="object-cover w-full h-full">
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-primary dark:text-white text-center">Юрій Петрович</h3>
+            <p class="text-accent font-semibold text-center text-base sm:text-lg">HARDWARE AND SERVERS</p>
+          </div>
+          <!-- Викладач 2 -->
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden card-hover border-2 border-transparent transition duration-300 flex flex-col items-center justify-center text-center p-4 sm:p-8 min-h-[320px] sm:min-h-[380px]">
+            <div class="w-40 h-40 sm:w-44 sm:h-44 rounded-lg overflow-hidden shadow-lg border-4 border-accent bg-white flex items-center justify-center mb-4 sm:mb-6">
+              <img src="images/NANEWBG.png" alt="Фото Наталії Анатолівни" class="object-cover w-full h-full">
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-primary dark:text-white text-center">Наталія Анатолівна</h3>
+            <p class="text-accent font-semibold text-center text-base sm:text-lg">SOFTWARE AND WEB-DESIGN</p>
+          </div>
+          <!-- Викладач 3 -->
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden card-hover border-2 border-transparent transition duration-300 flex flex-col items-center justify-center text-center p-4 sm:p-8 min-h-[320px] sm:min-h-[380px]">
+            <div class="w-40 h-40 sm:w-44 sm:h-44 rounded-lg overflow-hidden shadow-lg border-4 border-accent bg-white flex items-center justify-center mb-4 sm:mb-6">
+              <img src="images/TVNEWBG.png" alt="Фото Тетяни Володимирівни" class="object-cover w-full h-full">
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2 text-primary dark:text-white text-center">Тетяна Володимирівна</h3>
+            <p class="text-accent font-semibold text-center text-base sm:text-lg">DEVELOPMENT</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Предмети -->
+    <section id="subjects" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-8 my-8 sm:my-12">
+      <div class="w-full px-2 sm:px-0">
+        <h2 class="text-2xl sm:text-3xl font-extrabold mb-6 text-accent text-left drop-shadow-lg">Напрями підготовки</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Hardware -->
+          <div class="bg-yellow-50 dark:bg-gray-700 rounded-xl p-5 shadow flex flex-col h-full">
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-primary dark:text-white">
+              <i class="fas fa-microchip text-accent"></i> Hardware
+            </h3>
+            <p class="italic text-sm mb-3 text-gray-600 dark:text-gray-300">«Навіть маленька практика варта великої теорії»</p>
+            <ul class="list-disc list-inside space-y-1 text-base font-semibold text-gray-900 dark:text-gray-100">
+              <li>Архітектура комп’ютера</li>
+              <li>Периферійні пристрої</li>
+              <li>Основи електроніки та схемотехніки</li>
+              <li>Ремонт і технічне обслуговування ЕОМ</li>
+              <li>Мікроконтролери та вбудовані системи</li>
+              <li>Основи електрорадіомонтажу</li>
+            </ul>
+          </div>
+          <!-- Software -->
+          <div class="bg-yellow-50 dark:bg-gray-700 rounded-xl p-5 shadow flex flex-col h-full">
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-primary dark:text-white">
+              <i class="fas fa-code text-accent"></i> Software
+            </h3>
+            <p class="italic text-sm mb-3 text-gray-600 dark:text-gray-300">«Машина повинна працювати а людина думати»</p>
+            <ul class="list-disc list-inside space-y-1 text-base font-semibold text-gray-900 dark:text-gray-100">
+              <li>Алгоритми та основи програмування</li>
+              <li>Сучасні мови і технології програмування</li>
+              <li>Основи програмної інженерії</li>
+              <li>Системне програмування та ОС</li>
+              <li>Бази даних і SQL</li>
+              <li>Веб-технології та 3D-моделювання</li>
+              <li>Практичні проєкти та курсові роботи</li>
+            </ul>
+          </div>
+          <!-- Networks -->
+          <div class="bg-yellow-50 dark:bg-gray-700 rounded-xl p-5 shadow flex flex-col h-full">
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-primary dark:text-white">
+              <i class="fas fa-network-wired text-accent"></i> Мережі та адміністрування
+            </h3>
+            <p class="italic text-sm mb-3 text-gray-600 dark:text-gray-300">«Якщо у мережевого кабеля є один кінець, значить має бути і другий»</p>
+            <ul class="list-disc list-inside space-y-1 text-base font-semibold text-gray-900 dark:text-gray-100">
+              <li>Основи побудови мереж</li>
+              <li>Адміністрування локальних і глобальних мереж</li>
+              <li>Серверні рішення та віртуалізація</li>
+              <li>Проєктування мережевої інфраструктури</li>
+              <li>Інтернет речей та робототехніка</li>
+              <li>Кібербезпека та захист даних</li>
+            </ul>
+          </div>
+          <!-- Вибіркові дисципліни -->
+          <div class="bg-yellow-50 dark:bg-gray-700 rounded-xl p-5 shadow flex flex-col h-full">
+            <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-primary dark:text-white">
+              <i class="fas fa-star text-accent"></i> Вибіркові дисципліни
+            </h3>
+            <p class="italic text-sm mb-3 text-gray-600 dark:text-gray-300">«Вибір є завжди»</p>
+            <ul class="list-disc list-inside space-y-1 text-base font-semibold text-gray-900 dark:text-gray-100">
+              <li>Веб-технології</li>
+              <li>Розробка програмного забезпечення</li>
+              <li>Основи програмної інженерії</li>
+              <li>3D-моделювання та 3D-друк</li>
+              <li>Культура безпеки</li>
+              <li>Адміністрування комп’ютерних мереж</li>
+              <li>Інтернет речей і робототехніка</li>
+              <li>Штучний інтелект та промпт інженерія</li>
+              <li>Хмарні технології</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Контакти -->
+    <section id="contacts" class="section-bg rounded-2xl shadow-2xl p-4 sm:p-8 my-4">
+      <div class="w-full px-2 sm:px-0">
+        <h2 class="text-2xl sm:text-3xl font-extrabold mb-8 border-b-4 border-accent pb-2 inline-block text-primary drop-shadow-lg">Контакти</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-0">
+          <div class="bg-white/80 dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-4 md:mb-0">
+            <h3 class="text-xl sm:text-2xl font-semibold mb-4 text-primary">Контактна інформація</h3>
+            <ul class="space-y-4 text-base sm:text-lg">
+              <li class="flex items-center"><i class="fas fa-map-marker-alt mr-4 text-accent icon-bright"></i> м. Нововолинськ, вул. Шахтарська, 16</li>
+              <li class="flex items-center"><i class="fas fa-phone mr-4 text-accent icon-bright"></i>+380 (67) 39 75 331</li>
+              <li class="flex items-center"><i class="fas fa-envelope mr-4 text-accent icon-bright"></i>nemk@i.ua</li>
+            </ul>
+          </div>
+          <div class="bg-white/80 dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
+            <h3 class="text-xl sm:text-2xl font-semibold mb-4 text-primary">Написати нам</h3>
+            <form>
+              <div class="mb-6">
+                <label class="block mb-2 font-semibold">Ваше ім'я</label>
+                <input type="text" class="w-full px-4 py-3 border-2 border-accent rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-300 dark:bg-gray-700 text-base sm:text-lg">
+              </div>
+              <div class="mb-6">
+                <label class="block mb-2 font-semibold">Email</label>
+                <input type="email" class="w-full px-4 py-3 border-2 border-accent rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-300 dark:bg-gray-700 text-base sm:text-lg">
+              </div>
+              <div class="mb-6">
+                <label class="block mb-2 font-semibold">Повідомлення</label>
+                <textarea rows="3" class="w-full px-4 py-3 border-2 border-accent rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-300 dark:bg-gray-700 text-base sm:text-lg"></textarea>
+              </div>
+              <button type="button" class="bg-accent hover:bg-primary text-white font-bold py-3 px-6 sm:px-8 rounded-xl shadow-lg transition text-base sm:text-lg w-full">
+                Надіслати
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="mainFooter" class="gradient-bg text-white py-6 sm:py-8">
+    <div class="container mx-auto px-2 sm:px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0 text-center md:text-left">
+          <p class="font-semibold text-sm sm:text-base">© 2025 НЕФК. Спеціальність 123 "ОКМС"</p>
+        </div>
+        <div class="flex space-x-4 sm:space-x-6 justify-center md:justify-end items-center">
+          <button id="showPhoneBtn" class="hover:text-accent transition text-xl sm:text-2xl focus:outline-none" style="background: none; border: none; padding: 0;">
+            <i class="fas fa-phone"></i>
+          </button>
+          <span id="phoneNumber" class="hidden text-base sm:text-lg font-semibold ml-2 select-all">+380 (67) 39 75 331</span>
+          <a href="https://www.facebook.com/nefk.kt/" target="_blank" rel="noopener" class="hover:text-accent transition text-xl sm:text-2xl"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/nefk_kt/" target="_blank" rel="noopener" class="hover:text-accent transition text-xl sm:text-2xl"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.youtube.com/channel/UC8YHk5RCyGxxinXW5pSmlzQ" target="_blank" rel="noopener" class="hover:text-accent transition text-xl sm:text-2xl"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AI Chatbot HTML -->
+  <div id="aiChatBtn" title="Задати питання">
+    <i class="fas fa-comments"></i>
+  </div>
+  <div id="aiChatWindow">
+    <div id="aiChatHeader">
+      <span>AI Чат-бот</span>
+      <button id="aiChatClose" title="Закрити чат">&times;</button>
+    </div>
+    <div id="aiChatMessages">
+      <div class="ai-msg"><span>Вітаю! Я AI-бот коледжу. Поставте своє питання про навчання, вступ, предмети чи інше — і я допоможу!</span></div>
+    </div>
+    <form id="aiChatInputArea" autocomplete="off">
+      <input id="aiChatInput" type="text" placeholder="Ваше питання..." autocomplete="off" required />
+      <button id="aiChatSend" type="submit"><i class="fas fa-paper-plane"></i></button>
+    </form>
+  </div>
+  <style>
+    #aiChatBtn {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 99999;
+      background: #1E40AF;
+      color: #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 4px 24px rgba(30,64,175,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #aiChatBtn:hover {
+      background: #D97706;
+      color: #fff;
+    }
+    #aiChatWindow {
+      position: fixed;
+      right: 24px;
+      bottom: 96px;
+      width: 340px;
+      max-width: 95vw;
+      height: 480px;
+      max-height: 80vh;
+      background: #fff;
+      color: #222;
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(30,64,175,0.18);
+      z-index: 99999;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .dark #aiChatWindow {
+      background: #1F2937;
+      color: #fff;
+    }
+    #aiChatHeader {
+      background: #1E40AF;
+      color: #fff;
+      padding: 1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #aiChatClose {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    #aiChatMessages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      font-size: 1rem;
+      background: inherit;
+    }
+    #aiChatInputArea {
+      display: flex;
+      border-top: 1px solid #eee;
+      background: inherit;
+      padding: 0.5rem;
+    }
+    #aiChatInput {
+      flex: 1;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      outline: none;
+      background: #f9fafb;
+      color: #222;
+    }
+    .dark #aiChatInput {
+      background: #374151;
+      color: #fff;
+      border-color: #374151;
+    }
+    #aiChatSend {
+      background: #1E40AF;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      margin-left: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #aiChatSend:hover {
+      background: #D97706;
+    }
+    .ai-msg, .user-msg {
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: flex-start;
+    }
+    .ai-msg span {
+      background: #e0e7ff;
+      color: #1E40AF;
+      padding: 0.5rem 0.9rem;
+      border-radius: 1rem 1rem 1rem 0.2rem;
+      max-width: 80%;
+      display: inline-block;
+      font-size: 0.98rem;
+    }
+    .dark .ai-msg span {
+      background: #374151;
+      color: #fff;
+    }
+    .user-msg {
+      justify-content: flex-end;
+    }
+    .user-msg span {
+      background: #D97706;
+      color: #fff;
+      padding: 0.5rem 0.9rem;
+      border-radius: 1rem 1rem 0.2rem 1rem;
+      max-width: 80%;
+      display: inline-block;
+      font-size: 0.98rem;
+    }
+  </style>
+  <script>
+    // Плавна прокрутка до розділу
+    function scrollToSection(sectionId) {
+      if (sectionId === 'home') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Перемикач темної/світлої теми
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    }
+
+    // Перевірка збереженої теми
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // Обробка форми (заглушка)
+    document.querySelector('form button').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Дякуємо за повідомлення! Ми зв\'яжемося з вами найближчим часом.');
+      document.querySelector('form').reset();
+    });
+
+    // Показ/приховування header/footer при скролі + показ header при прокрутці вгору
+    let lastScroll = 0;
+    const header = document.getElementById('mainHeader');
+    const footer = document.getElementById('mainFooter');
+    let ticking = false;
+
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          const currentScroll = window.scrollY;
+          if (currentScroll > 50) {
+            if (currentScroll > lastScroll) {
+              // Скрол вниз — ховаємо header
+              header.style.transform = 'translateY(-100%)';
+              footer.style.transform = 'translateY(100%)';
+            } else {
+              // Скрол вгору — показуємо header
+              header.style.transform = 'translateY(0)';
+              footer.style.transform = 'translateY(0)';
+            }
+          } else {
+            header.style.transform = 'translateY(0)';
+            footer.style.transform = 'translateY(0)';
+          }
+          lastScroll = currentScroll;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Мобільне бургер-меню
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeBurger = document.getElementById('closeBurger');
+    function openMobileMenu() {
+      mobileMenu.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      mobileMenu.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    burgerBtn.addEventListener('click', openMobileMenu);
+    closeBurger.addEventListener('click', closeMobileMenu);
+    // Закриття меню при кліку поза ним
+    mobileMenu.addEventListener('click', function(e) {
+      if (e.target === mobileMenu) closeMobileMenu();
+    });
+
+    // Показ номера телефону у footer
+    const showPhoneBtn = document.getElementById('showPhoneBtn');
+    const phoneNumber = document.getElementById('phoneNumber');
+    if (showPhoneBtn && phoneNumber) {
+      showPhoneBtn.addEventListener('click', function() {
+        phoneNumber.classList.toggle('hidden');
+      });
+    }
+
+    // AI Chatbot логіка (ізоляція від іншого функціоналу)
+    (function() {
+      const aiChatBtn = document.getElementById('aiChatBtn');
+      const aiChatWindow = document.getElementById('aiChatWindow');
+      const aiChatClose = document.getElementById('aiChatClose');
+      const aiChatInput = document.getElementById('aiChatInput');
+      const aiChatMessages = document.getElementById('aiChatMessages');
+      const aiChatInputArea = document.getElementById('aiChatInputArea');
+
+      aiChatBtn.onclick = () => {
+        aiChatWindow.style.display = 'flex';
+        aiChatInput.focus();
+      };
+      aiChatClose.onclick = () => {
+        aiChatWindow.style.display = 'none';
+      };
+
+      // --- Gemini API інтеграція з fallback ---
+      const GEMINI_API_KEY = 'AIzaSyCEaEheTj4peSG4MV13dWq3RlW1bl2-Wns'; // <-- ВСТАВТЕ СВІЙ КЛЮЧ
+
+      // Fallback короткі відповіді
+      function aiBotReplyFallback(question) {
+        const q = question.toLowerCase();
+        if (q.includes('вступ') || q.includes('прийом')) return 'Інформація про вступ — на сторінці "Абітурієнту".';
+        if (q.includes('контакт') || q.includes('телефон')) return 'Телефон: +380 (67) 39 75 331.';
+        if (q.includes('предмет') || q.includes('що вивчають')) return 'Вивчаємо програмування, електроніку, мережі, 3D-друк, IoT.';
+        if (q.includes('вартість') || q.includes('плата')) return 'Є бюджет і контракт. Деталі — у приймальній комісії.';
+        if (q.includes('документ') || q.includes('які документи')) return 'Потрібні: паспорт, код, документ про освіту, фото, меддовідка.';
+        if (q.includes('адреса')) return 'м. Нововолинськ, вул. Луцька, 20.';
+        if (q.includes('розклад')) return 'Розклад — у класного керівника або на дошці.';
+        if (q.includes('працевлаштування') || q.includes('робота')) return 'Випускники працюють у IT, сервісі, адмініструванні.';
+        if (q.includes('допомога') || q.includes('питання')) return 'Поставте конкретне питання!';
+        return 'Вибачте, не можу відповісти. Спробуйте інакше сформулювати питання.';
+      }
+
+      async function aiBotReply(question) {
+        // Показати "друкує..." поки чекаємо відповідь
+        const aiDiv = document.createElement('div');
+        aiDiv.className = 'ai-msg';
+        aiDiv.innerHTML = `<span>Друкую відповідь...</span>`;
+        aiChatMessages.appendChild(aiDiv);
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+        let answer = '';
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      {
+                        text: question + "\nВідповідай максимально коротко, лаконічно, українською мовою, всі питання будуть стосуватися Нововолинського електромеханічого коледжу, не використовуй символи * у відповідях."
+                      }
+                    ]
+                  }
+                ]
+              })
+            }
+          );
+          const data = await res.json();
+          aiDiv.remove();
+          if (
+            data && data.candidates && data.candidates[0] &&
+            data.candidates[0].content && data.candidates[0].content.parts &&
+            data.candidates[0].content.parts[0].text
+          ) {
+            answer = data.candidates[0].content.parts[0].text.trim();
+          } else {
+            // fallback
+            answer = aiBotReplyFallback(question);
+          }
+        } catch (e) {
+          aiDiv.remove();
+          answer = aiBotReplyFallback(question);
+        }
+        const aiDivReal = document.createElement('div');
+        aiDivReal.className = 'ai-msg';
+        aiDivReal.innerHTML = `<span>${answer}</span>`;
+        aiChatMessages.appendChild(aiDivReal);
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+      }
+
+      aiChatInputArea.onsubmit = function(e) {
+        e.preventDefault();
+        const userMsg = aiChatInput.value.trim();
+        if (!userMsg) return;
+        // Додаємо повідомлення користувача
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user-msg';
+        userDiv.innerHTML = `<span>${userMsg}</span>`;
+        aiChatMessages.appendChild(userDiv);
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+        aiChatInput.value = '';
+        // Відправляємо питання до Gemini API з fallback
+        aiBotReply(userMsg);
+      };
+    })();
+
+    function getAIResponse(userInput) {
+      // Спроба знайти точну відповідь
+      const knownAnswers = {
+        "привіт": "Вітаю! Чим можу допомогти?",
+        "контакти": "Наші контакти: ...",
+        // ...інші відомі відповіді...
+      };
+
+      const normalized = userInput.trim().toLowerCase();
+      if (knownAnswers[normalized]) {
+        return knownAnswers[normalized];
+      }
+
+      // Аналіз ключових слів
+      if (normalized.includes("адрес") || normalized.includes("де")) {
+        return "Наша адреса: м. ...";
+      }
+      if (normalized.includes("телефон") || normalized.includes("зв'язатись")) {
+        return "Телефон для зв'язку: ...";
+      }
+      if (normalized.includes("документи") || normalized.includes("потрібно")) {
+        return "Для вступу потрібні такі документи: ...";
+      }
+
+      // Відповідь за замовчуванням
+      return "Вибачте, я не зрозумів запит. Спробуйте сформулювати питання інакше.";
+    }
+  </script>
+</body>
+</html>
